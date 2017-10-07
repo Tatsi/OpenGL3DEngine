@@ -7,11 +7,13 @@
 
 #include "targetver.h"
 #define WIN32_
+
 // Windows Header Files:
 #include "windows.h"
 #include "window.h"
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
+#include "lib/glew.h"
 #include "GL/gl.h"
 #include "GL/glu.h"
 

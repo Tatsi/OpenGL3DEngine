@@ -32,7 +32,7 @@ private:
 	float nextGameUpdateTime;
 	int lastRendered; //Last time (in clock ticks) the scene was drawn
 	int lastUpdated;//Last time (in clock ticks) the game was updated
-	int updateCount; //How many times game has been updated
+	int updateCount; //How many times game has been updated in a row without rendering
 	static Engine instance;
 	bool running;
 	int previous_mouse_x;

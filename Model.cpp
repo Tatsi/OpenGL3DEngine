@@ -65,7 +65,7 @@ model_data Model::load()
 	{
 		texture_size.first = 1024;
 		texture_size.second = 1024;
-		//Set up material properties
+		// Set up material properties
 		ambient_light_reflection_constant[0] = 0.3;
 		ambient_light_reflection_constant[1] = 0.3;
 		ambient_light_reflection_constant[2] = 0.3;
@@ -77,24 +77,22 @@ model_data Model::load()
 		specular_light_reflection_constant[2] = 0.9;
 	}
 
-	 //Init shader program
+	 // Init shader program
 	 initShaderProgram(vertexShaderFileName, fragmentShaderFileName);
-
-	
     
-     //Load model data
+     // Load model data
 	 std::string normalfilename = fileName;
 	 normalfilename.append(".normal");
 	 
-	 //Test if normal data has been calculated
+	 // Test if normal data has been calculated
 	 std::fstream stream(normalfilename.c_str(), std::fstream::in|std::fstream::binary);
     
-	 if (!stream.good()) //Normal data has not been calculated. Need to calculate it and store it
+	 if (!stream.good()) // Normal data has not been calculated. Need to calculate it and store it
      {
 		 stream.close();
 		 data = loadAndCreateTexturedModelData(fileName);
 	 }
-	 else //Normal data has been calculated
+	 else // Normal data has been calculated
 	 {
 		 stream.close();
 		 data = loadTexturedModelData(fileName);
@@ -105,48 +103,46 @@ model_data Model::load()
 
 	 glEnableClientState(GL_VERTEX_ARRAY);
      
-	 glGenVertexArrays(1, &vaoID); //Create Vertex array
-     glBindVertexArray(vaoID);	//Bind vertex array
+	 glGenVertexArrays(1, &vaoID); // Create Vertex array
+     glBindVertexArray(vaoID);	// Bind vertex array
 
-	 //Init vertex buffer
+	 // Init vertex buffer
      glGenBuffers(1,  &vertexVBOID);
      glBindBuffer(GL_ARRAY_BUFFER, vertexVBOID);
      glBufferData(GL_ARRAY_BUFFER, 3*data.vertexCount*sizeof(float), data.vertexData, GL_STATIC_DRAW);
 	 
-	 glEnableVertexAttribArray(glsl_locations.location_coordinates); //Bind vertex data to vertex_Position GLSL-param
-     glVertexAttribPointer(glsl_locations.location_coordinates, 3, GL_FLOAT, GL_FALSE, 0, 0); //Set-up pointer
+	 glEnableVertexAttribArray(glsl_locations.location_coordinates); // Bind vertex data to vertex_Position GLSL-param
+     glVertexAttribPointer(glsl_locations.location_coordinates, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
      glBindBuffer(GL_ARRAY_BUFFER, 0); 
      
-	 //Init indice buffer
+	 // Init indice buffer
      glGenBuffers(1, &indiceIBOID);
      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceIBOID);
      glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3*data.faceCount*sizeof(ushort), data.faceData, GL_STATIC_DRAW);
      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
-	 //Init normal buffer
+	 // Init normal buffer
      glGenBuffers(1,  &normalVBOID);
      glBindBuffer(GL_ARRAY_BUFFER, normalVBOID);
      glBufferData(GL_ARRAY_BUFFER, 3*data.vertexCount*sizeof(float), data.vertexNormalData, GL_STATIC_DRAW);
 
-	 glEnableVertexAttribArray(glsl_locations.location_normals); //Bind location data to vertex_Location shader-param
-     glVertexAttribPointer(glsl_locations.location_normals, 3, GL_FLOAT, GL_FALSE, 0, 0); //Set-up pointer
+	 glEnableVertexAttribArray(glsl_locations.location_normals); // Bind location data to vertex_Location shader-param
+     glVertexAttribPointer(glsl_locations.location_normals, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
      glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	 //Init texture coordinate buffer
+	 // Init texture coordinate buffer
 	 glGenBuffers(1,  &texcordVBOID);
 	 glBindBuffer(GL_ARRAY_BUFFER, texcordVBOID);
      glBufferData(GL_ARRAY_BUFFER, 2*data.vertexCount*sizeof(float), data.textureCoordinates, GL_STATIC_DRAW);
-	 glEnableVertexAttribArray(glsl_locations.location_texture_coordinates); //Bind location data to texture_coordinates shader-param
-     glVertexAttribPointer(glsl_locations.location_texture_coordinates, 2, GL_FLOAT, GL_FALSE, 0, 0); //Set-up pointer
+	 glEnableVertexAttribArray(glsl_locations.location_texture_coordinates); // Bind location data to texture_coordinates shader-param
+     glVertexAttribPointer(glsl_locations.location_texture_coordinates, 2, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
      glBindBuffer(GL_ARRAY_BUFFER, 0); 
      
-	 glBindVertexArray(0);//Unbind vertex array
-
-     //Tässä vapautettiin ennen modelidata, nyt omalla funktiolla
+	 glBindVertexArray(0); // Unbind vertex array
 
 	 glDisableClientState(GL_VERTEX_ARRAY);
 
-	 //Init texture data
+	 // Init texture data
 	 Bitmap texture;
 	 texture.loadFromRaw(textureFileName, texture_size.first, texture_size.second);
 
@@ -156,8 +152,8 @@ model_data Model::load()
 	 gluBuild2DMipmaps(GL_TEXTURE_2D, 3, texture_size.first, texture_size.second, GL_RGB, GL_UNSIGNED_BYTE, texture.getData());
 	 glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
 	 glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
-	 glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//This is actually the default value, other option is GL_CLAMP
-	 glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//This is actually the default value, other option is GL_CLAMP
+	 glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // This is actually the default value, other option is GL_CLAMP
+	 glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // This is actually the default value, other option is GL_CLAMP
 
 	 glBindTexture(GL_TEXTURE_2D, 0);
 	 
@@ -171,63 +167,67 @@ model_data Model::load()
 
 void Model::initShaderProgram(std::string vertexShaderFileName, std::string fragmentShaderFileName)
 {
-    int compiled; //Temporary storage for compile statuses
+    int compiled; // Temporary storage for compile statuses
     
-    //Vertex shader
+    // Vertex shader
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    GLint vertexShaderLength; //Store length of shader text
+    GLint vertexShaderLength; // Store length of shader text
 	char* vertexShaderSource = loadShaderFromFile(vertexShaderFileName, vertexShaderLength);
     const char* vv = vertexShaderSource;
     glShaderSource(vertexShader, 1, &vv, &vertexShaderLength);
-    glCompileShader(vertexShader); //Compile vertex shader
-    delete vertexShaderSource; //Clear data
-    vertexShaderSource = NULL; //To null for safety
-    vv = NULL; //Set to null for safety
+    glCompileShader(vertexShader); // Compile vertex shader
+    delete vertexShaderSource; // Clear data
+    vertexShaderSource = NULL; // To null for safety
+    vv = NULL; // Set to null for safety
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &compiled);//Check status
     if (!compiled)
     {
 		printShaderlog(vertexShader);
         throw std::logic_error("Compiling vertex shader failed.");
     }
-    //Fragment shader
+    // Fragment shader
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     GLint fragmentShaderLength;
     char* fragmentShaderSource = loadShaderFromFile(fragmentShaderFileName, fragmentShaderLength);
     const char* ff = fragmentShaderSource;
     glShaderSource(fragmentShader, 1, &ff, &fragmentShaderLength);
-    glCompileShader(fragmentShader); //Compile fragment shader
-    delete fragmentShaderSource; //Free text from mem
-    fragmentShaderSource = NULL; //To null for safety
-    ff = NULL; //Set to null, no longer used
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &compiled);//Check status
+    glCompileShader(fragmentShader); // Compile fragment shader
+    delete fragmentShaderSource; // Free text from mem
+    fragmentShaderSource = NULL; // To null for safety
+    ff = NULL; // Set to null, no longer used
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &compiled);// Check status
     if (!compiled)
     {
 		printShaderlog(fragmentShader);
         throw std::logic_error("Compiling fragment shader failed.");
     }
-    //Shader program
-    shaderProgram = glCreateProgram(); //Create shader program
-    glAttachShader(shaderProgram, vertexShader); //Attach vert shader to program
-    glAttachShader(shaderProgram, fragmentShader); //Attach frag shader to program
-    glLinkProgram(shaderProgram); //Link
+    // Shader program
+    shaderProgram = glCreateProgram(); // Create shader program
+    glAttachShader(shaderProgram, vertexShader); // Attach vert shader to program
+    glAttachShader(shaderProgram, fragmentShader); // Attach frag shader to program
+    glLinkProgram(shaderProgram); // Link
     
 	glUseProgram(shaderProgram);
-	//Parameter handling
+
+	// Parameter handling
     glsl_locations.location_coordinates = glGetAttribLocation(shaderProgram,"vertex_position");
     glsl_locations.location_normals = glGetAttribLocation(shaderProgram,"vertex_normal");
 	glsl_locations.location_texture_coordinates = glGetAttribLocation(shaderProgram,"texture_coordinate");
 
-	//Uniform attributes. These values can only change between objects (glBegin..glEnd)
-	glsl_locations.location_projection_matrix = glGetUniformLocation(shaderProgram, "projectionMatrix");//Projection matrix
-	glsl_locations.location_modelview_matrix = glGetUniformLocation(shaderProgram, "modelViewMatrix");//Modelview matrix
+	// Uniform attributes. These values can only change between objects (glBegin..glEnd)
+	glsl_locations.location_projection_matrix = glGetUniformLocation(shaderProgram, "projectionMatrix"); // Projection matrix
+	glsl_locations.location_modelview_matrix = glGetUniformLocation(shaderProgram, "modelViewMatrix"); // Modelview matrix
+	glsl_locations.location_model_matrix = glGetUniformLocation(shaderProgram, "modelMatrix"); // Model matrix
+	glsl_locations.location_normal_matrix = glGetUniformLocation(shaderProgram, "normalMatrix"); // Normal matrix
+	glsl_locations.location_view_matrix = glGetUniformLocation(shaderProgram, "viewMatrix"); // View matrix
 	glsl_locations.location_viewing_point = glGetUniformLocation(shaderProgram, "viewing_point");
-	glsl_locations.location_light_position = glGetUniformLocation(shaderProgram, "light_position");
-	glsl_locations.location_ambient_light_intensity = glGetUniformLocation(shaderProgram, "amb_light_inte"); //Intensity/color of ambient light
-	glsl_locations.location_ambient_light_reflection_constant = glGetUniformLocation(shaderProgram, "amb_light_refl");;//reflection constant of ambient light
-	glsl_locations.location_diffuse_light_intensity = glGetUniformLocation(shaderProgram, "dif_light_inte"); //Intensity/color of diffuse light
-	glsl_locations.location_diffuse_light_reflection_constant = glGetUniformLocation(shaderProgram, "dif_light_refl");
-	glsl_locations.location_specular_light_intensity = glGetUniformLocation(shaderProgram, "spe_light_inte"); //Intensity/color of specular light
-	glsl_locations.location_specular_light_reflection_constant = glGetUniformLocation(shaderProgram, "spe_light_refl");	
+	glsl_locations.location_light_position = glGetUniformLocation(shaderProgram, "light_position"); // Not used
+	glsl_locations.location_ambient_light_intensity = glGetUniformLocation(shaderProgram, "ia"); // Intensity/color of ambient light
+	glsl_locations.location_ambient_light_reflection_constant = glGetUniformLocation(shaderProgram, "ka");;// reflection constant of ambient light
+	glsl_locations.location_diffuse_light_intensity = glGetUniformLocation(shaderProgram, "id"); // Intensity/color of diffuse light
+	glsl_locations.location_diffuse_light_reflection_constant = glGetUniformLocation(shaderProgram, "kd");
+	glsl_locations.location_specular_light_intensity = glGetUniformLocation(shaderProgram, "is"); // Intensity/color of specular light
+	glsl_locations.location_specular_light_reflection_constant = glGetUniformLocation(shaderProgram, "ks");	
 
 	glsl_locations.location_texture_sampler_0 = glGetUniformLocation(shaderProgram, "texture_sampler_0");
 	glUniform1i(glsl_locations.location_texture_sampler_0, 0); // 0 for texturing unit 0
@@ -242,7 +242,6 @@ void Model::clearModelData()
 	vertexData = NULL;
 	faceData = NULL;
 	
-
 	 //free vertex normal data
 	 free(data.vertexNormalData);
 	 data.vertexNormalData = NULL;

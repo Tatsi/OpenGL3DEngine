@@ -51,21 +51,11 @@ StdAfx.h, StdAfx.cpp
     These files are used to build a precompiled header (PCH) file
     named window.pch and a precompiled types file named StdAfx.obj.
 
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
 
 /////////////////////////////////////////////////////////////////////////////
-
-
 3DS Max:
+
 Tekstuurin toistoa (tiling) ei saa säätää texture settingsistä, vaan modifierilla. UVW map tai Unwrap UVW.
 Muuten toisto ei tule mukaan exportattaessa scriptillä.tekstuurien koon tulee olla kahden potensseja. 
 
 Tekstuurit voi piirtää 3DS maxin viewport canvasilla. Modelin UVW arvojen tulee olla välillä 1-0 tai muuten syntyy tilingia.
-
-SINNE missä tutkitaan tippumista pitää lisätä myös boundingbox modelien BB:iden NELIÖiden kolmiot (12 kpl), ei siis modelin kolmiot, tutkittaviksi, nopeampaa ja muuten BB modeleista menee idea koska tippuminen ei toimi
-
-HUOM!!! Terrainissa Modelin BB törmäys ei toimi =/ Joko BB:t lasketaan

@@ -24,32 +24,33 @@ out vec3 viewer_direction;//Unit vector from vertex to viewer
 
 out vec3 fragment_normal;
 
-out vec3 fragment_ambient_intensity;//Amount of reflected ambient light, Ia*Ka
-out vec3 fragment_diffuse_intensity;//Id*kd
-out vec3 fragment_specular_intensity;//Is*ks
+out vec3 fragment_ambient_intensity; // Amount of reflected ambient light, Ia * Ka
+out vec3 fragment_diffuse_intensity; // Id * kd
+out vec3 fragment_specular_intensity; // Is * ks
 
 out vec2 texture_coordinates;
 
 void main()
 {	
-	//Reflected ambient light
+	// Reflected ambient light
 	fragment_ambient_intensity = amb_light_inte * amb_light_refl; 
 
-	//Calculate parameters for diffuse light
-    	vec3 vertex_absolute_position = (modelViewMatrix * vec4(vertex_position, 1.0)).xyz;
+	// Calculate parameters for diffuse light
+    vec3 vertex_absolute_position = (modelViewMatrix * vec4(vertex_position, 1.0)).xyz;
 	vec3 camera_absolute_position = (modelViewMatrix * vec4(viewing_point, 1.0)).xyz;
+	
 	//light direction has currently been hard coded to come almost straight from the sky
 	//The vector points towards the light source aka. sky
 	light_direction = normalize((modelViewMatrix * vec4(0.0,1.0,0.0,0.0)).xyz);
 
 
 	fragment_normal = normalize((modelViewMatrix * vec4(vertex_normal, 0.0)).xyz);
-	fragment_diffuse_intensity = dif_light_inte * dif_light_refl;//Id*kd
+	fragment_diffuse_intensity = dif_light_inte * dif_light_refl; // Id * kd
 
-	//Calculate parameters for specular light
+	// Calculate parameters for specular light
 	fragment_specular_intensity = spe_light_inte * spe_light_refl;
 
-	viewer_direction = normalize(camera_absolute_position-vertex_absolute_position);
+	viewer_direction = normalize(camera_absolute_position - vertex_absolute_position);
 
 	texture_coordinates = texture_coordinate;
 

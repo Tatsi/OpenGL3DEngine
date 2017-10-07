@@ -23,6 +23,7 @@ void printShaderlog(int shader){
 		infoLog = (char *)malloc (infoLogLen);
 		glGetShaderInfoLog (shader, infoLogLen, &charsWritten, infoLog);
 		std::cout.write(infoLog,infoLogLen);
+		OutputDebugString(infoLog);
 		free (infoLog);
 	} 
 }

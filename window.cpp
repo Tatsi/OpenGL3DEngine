@@ -36,7 +36,7 @@ int WINAPI WinMain( HINSTANCE hInstance,
 
 	RegisterClass( &wc );
 
-	hwnd = CreateWindow( //Set window to the center of the screen
+	hwnd = CreateWindow( // Set window to the center of the screen
         TEXT("GameWindow"),
         TEXT("JONgIne"),
         WS_OVERLAPPEDWINDOW,
@@ -53,15 +53,15 @@ int WINAPI WinMain( HINSTANCE hInstance,
 		return 1;
 	}
 
-	//Remove unnecessary parts of window
+	// Remove unnecessary parts of window
 	DWORD dwStyle = ::GetWindowLong(hwnd, GWL_STYLE);
 	DWORD dwRemove = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 	DWORD dwNewStyle = dwStyle & ~dwRemove;
 	::SetWindowLong(hwnd, GWL_STYLE, dwNewStyle);
 	::SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-	//#################################
-	//##Get device context for OpenGL##
-	//#################################
+	//###################################
+	//## Get device context for OpenGL ##
+	//###################################
 	hdc = GetDC(hwnd);
 
 	if (hdc == NULL)
@@ -70,9 +70,9 @@ int WINAPI WinMain( HINSTANCE hInstance,
                          _T("Error!"), NULL);
 		return 1;
 	}
-	//###################################
-	//##Create OpenGL rendering context##
-	//###################################
+	//#####################################
+	//## Create OpenGL rendering context ##
+	//#####################################
 	int indexPixelFormat = 0;
 
 	PIXELFORMATDESCRIPTOR pfd =
@@ -99,43 +99,44 @@ int WINAPI WinMain( HINSTANCE hInstance,
 			_T("Error!"), NULL);
 		return 1;
 	}
-	//#######################################################
-	//##Set the created rendering context as the active one##
-	//#######################################################
+	//#########################################################
+	//## Set the created rendering context as the active one ##
+	//#########################################################
 	if ((wglMakeCurrent(hdc, hglrc)) == false)
 	{
 		MessageBox(hwnd, _T("Failed to set current rendering context!"),
 			_T("Error!"), NULL);
 		return 1;
 	}
-	//#############
-	//##Init Glew##
-	//#############
-	bool err=glewInit();
+	//###############
+	//## Init Glew ##
+	//###############
+	bool err = glewInit();
 
-	if(err!=GLEW_OK)
+	if(err != GLEW_OK)
 	{
 		std::cout << "Glew initialization failed!" << std::endl;
 		return -1;
 	}	
 	//#####################################
-	//##Init and renderer, Engine and UI.##
+	//## Init and renderer, Engine and UI.##
 	//#####################################
 	Renderer::get().init(hdc);
 	Engine::get().init(&hwnd, ::GetDeviceCaps(hdc, HORZRES), ::GetDeviceCaps(hdc, VERTRES));
 	UI::get().init(hdc);
-	//############################
-	//##Open and draw the window##
-	//############################
+
+	//###############################
+	//## Open and draw the window ###
+	//###############################
 	ShowCursor(false);
 	ShowWindow(hwnd, iCmdShow );
-    //UpdateWindow(hwnd);
-	//################
-	//##Start engine##
-	//################
+
+	//##################
+	//## Start engine ##
+	//##################
 	Engine::get().start();
 
-	//Release context
+	// Release context
 	wglMakeCurrent(hdc, NULL);	// release device context in use by rc
     wglDeleteContext(hglrc);	// delete rendering context
 

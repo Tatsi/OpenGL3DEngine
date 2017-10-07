@@ -30,11 +30,11 @@ void Engine::start()
 	mainLoop();
 	LevelManager::get().unloadLevel();
 }
+
 void Engine::quit()
 {
 	running = false;
 }
-
 
 void Engine::mainLoop()
 {
@@ -103,7 +103,7 @@ void Engine::mainLoop()
 
 void Engine::toggleFullscreen()
 {
-	if (full_screen) //Deactivate fullscreen
+	if (full_screen) // Deactivate fullscreen
 	{
 		reshape(800,600);
 		SetWindowPos(

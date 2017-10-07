@@ -7,7 +7,7 @@ void UI::init(HDC deviceCxtHandle)
 {
 	deviceContextHandle = deviceCxtHandle;
 
-	for (int i = 0; i < GAME_LOG_SIZE; i++) //Init log with empty strings
+	for (int i = 0; i < GAME_LOG_SIZE; i++) // Init log with empty strings
 	{
 		gameLog.push_back("");
 	}

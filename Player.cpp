@@ -361,7 +361,7 @@ void Player::updatePlayerY()
 		float cy = triangles[i*3+2].y;
 		float cz = triangles[i*3+2].z;
 
-		//Calculate plane equation based on the triangle
+		// Calculate plane equation based on the triangle
 		float A = ay * (bz - cz) + by * (cz - az) + cy * (az - bz);
 		float B = az *(bx - cx) + bz *(cx - ax) + cz *(ax - bx);
 		float C = ax *(by - cy) + bx *(cy - ay) + cx *(ay - by);
@@ -375,12 +375,12 @@ void Player::updatePlayerY()
 
 		float triangle_y = (-D-A*x-C*z)/B;
 
-		//Current triangle may only be the first one below the player center point if its y value is smaller or equal to characters center y
-		//Notice that if the ascent on one player move is more than players height, player falls through the ground
+		// Current triangle may only be the first one below the player center point if its y value is smaller or equal to characters center y
+		// Notice that if the ascent on one player move is more than players height, player falls through the ground
 		if (triangle_y <= y)
 		{
-			//If this is the first examined triangle (i.e. the distance is not initialized) or distance is smaller than current
-			//Notice that if player is standing between two triangles the other one gets filtered out here.
+			// If this is the first examined triangle (i.e. the distance is not initialized) or distance is smaller than current
+			// Notice that if player is standing between two triangles the other one gets filtered out here.
 			if (distance_to_closest == -1.0 || distance_to_closest > y - triangle_y)
 			{
 				distance_to_closest =  y - triangle_y;
@@ -390,12 +390,12 @@ void Player::updatePlayerY()
 	}
 
 	//#Falling is currently implemented here#
-	//If distance from the feet of the player to the ground is greater than the falling speed the player falls the lenght of the falling_speed
+	// If distance from the feet of the player to the ground is greater than the falling speed the player falls the lenght of the falling_speed
 	if (distance_to_closest - height > falling_speed)
 	{
 		y -= falling_speed;
 	}
-	else //If its smaller then the player is set to stand on the triangle
+	else // If its smaller then the player is set to stand on the triangle
 	{
 		y =  y_of_the_closest + height;
 	}	
@@ -419,7 +419,7 @@ std::pair<float,float> Player::getNewPlayerY(float newX, float newZ)
 		float cy = triangles[i*3+2].y;
 		float cz = triangles[i*3+2].z;
 
-		//Calculate plane equation based on the triangle
+		// Calculate plane equation based on the triangle
 		float A = ay * (bz - cz) + by * (cz - az) + cy * (az - bz);
 		float B = az *(bx - cx) + bz *(cx - ax) + cz *(ax - bx);
 		float C = ax *(by - cy) + bx *(cy - ay) + cx *(ay - by);
