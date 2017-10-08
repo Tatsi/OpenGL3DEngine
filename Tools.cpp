@@ -122,26 +122,41 @@ model_data loadAndCreateTexturedModelData(std::string filename)
                         float AB_x = B_x - A_x; //Vector from A to B
                         float AB_y = B_y - A_y;
                         float AB_z = B_z - A_z;
-                        float AB_length = sqrtf(powf(AB_x, 2.f)+powf(AB_y, 2.f)+powf(AB_z, 2.f));
-                        AB_x = AB_x / AB_length; //to unit vector
-                        AB_y = AB_y / AB_length; //to unit vector
-                        AB_z = AB_z / AB_length; //to unit vector
+
+						// No need for unit ?
+                        //float AB_length = sqrtf(powf(AB_x, 2.f)+powf(AB_y, 2.f)+powf(AB_z, 2.f));
+                        //AB_x = AB_x / AB_length; //to unit vector
+                        //AB_y = AB_y / AB_length; //to unit vector
+                        //AB_z = AB_z / AB_length; //to unit vector
                         
                         float AC_x = C_x - A_x; //Vector from A to C
                         float AC_y = C_y - A_y;
                         float AC_z = C_z - A_z;
-                        float AC_length = sqrtf(powf(AC_x, 2.f)+powf(AC_y, 2.f)+powf(AC_z, 2.f));
-                        AC_x = AC_x / AC_length; //to unit vector
-                        AC_y = AC_y / AC_length; //to unit vector
-                        AC_z = AC_z / AC_length; //to unit vector
+
+						// No need for unit ?
+                        //float AC_length = sqrtf(powf(AC_x, 2.f)+powf(AC_y, 2.f)+powf(AC_z, 2.f));
+                        //AC_x = AC_x / AC_length; //to unit vector
+                        //AC_y = AC_y / AC_length; //to unit vector
+                        //AC_z = AC_z / AC_length; //to unit vector
 
                         float ABxAC_x = AB_y*AC_z-AB_z*AC_y; //Cross product of two side vectors of face
-                        float ABxAC_y = AB_z*AB_x-AB_x*AC_z;
+                        float ABxAC_y = AB_z*AC_x-AB_x*AC_z;
                         float ABxAC_z = AB_x*AC_y-AB_y*AC_x;
                         float ABxAC_length = sqrtf(powf(ABxAC_x, 2.f)+powf(ABxAC_y, 2.f)+powf(ABxAC_z, 2.f));
-                        ABxAC_x = ABxAC_x / ABxAC_length; //to unit vector
-                        ABxAC_y = ABxAC_y / ABxAC_length; //to unit vector
-                        ABxAC_z = ABxAC_z / ABxAC_length; //to unit vector
+
+						if (ABxAC_length > 0.0f){
+							ABxAC_x = ABxAC_x / ABxAC_length; //to unit vector
+							ABxAC_y = ABxAC_y / ABxAC_length; //to unit vector
+							ABxAC_z = ABxAC_z / ABxAC_length; //to unit vector
+						}
+						else {
+							//throw std::logic_error("Length of normal vector is zero in model " + filename);
+						}
+
+						ABxAC_length = sqrtf(powf(ABxAC_x, 2.f) + powf(ABxAC_y, 2.f) + powf(ABxAC_z, 2.f));
+						if (ABxAC_length < 0.99f) {
+							//throw std::logic_error("Length of normal vector is less than one " + filename);
+						}
 
                         sum_x+=ABxAC_x; //add values of obtained normal vector to sum
                         sum_y+=ABxAC_y;
@@ -170,6 +185,7 @@ model_data loadAndCreateTexturedModelData(std::string filename)
     return data;
 }
 
+// TODO Fix, this doesnt ouput same as the above method
 model_data loadTexturedModelData(std::string filename)
 {
 	//Open stream for reading normal data

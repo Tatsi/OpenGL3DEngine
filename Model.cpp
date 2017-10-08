@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Model.h"
 
-
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 model_data Model::load()
 {
@@ -13,7 +15,7 @@ model_data Model::load()
 	std::pair<GLint, GLint> texture_size;
 
 	std::string textureFileName = fileName;
-	textureFileName.append(".raw");//Texture file name is Models/model_name/model_name.raw
+	textureFileName.append(".raw"); // Texture file name is Models/model_name/model_name.raw
 
 	if (name == "bunny") //Load these from files later
 	{
@@ -85,18 +87,19 @@ model_data Model::load()
 	 normalfilename.append(".normal");
 	 
 	 // Test if normal data has been calculated
-	 std::fstream stream(normalfilename.c_str(), std::fstream::in|std::fstream::binary);
+	 //std::fstream stream(normalfilename.c_str(), std::fstream::in|std::fstream::binary);
     
-	 if (!stream.good()) // Normal data has not been calculated. Need to calculate it and store it
-     {
-		 stream.close();
-		 data = loadAndCreateTexturedModelData(fileName);
-	 }
-	 else // Normal data has been calculated
-	 {
-		 stream.close();
-		 data = loadTexturedModelData(fileName);
-	 }
+	 //if (!stream.good()) // Normal data has not been calculated. Need to calculate it and store it
+     //{
+		 //stream.close();
+	data = loadAndCreateTexturedModelData(fileName);
+	 //}
+	 //else // Normal data has been calculated
+	 //{
+		 // TODO This does not work
+		 //stream.close();
+		 //data = loadTexturedModelData(fileName);
+	 //}
 	 
 	 faceCount = data.faceCount;
 	 vertexCount = data.vertexCount;
@@ -111,32 +114,54 @@ model_data Model::load()
      glBindBuffer(GL_ARRAY_BUFFER, vertexVBOID);
      glBufferData(GL_ARRAY_BUFFER, 3*data.vertexCount*sizeof(float), data.vertexData, GL_STATIC_DRAW);
 	 
-	 glEnableVertexAttribArray(glsl_locations.location_coordinates); // Bind vertex data to vertex_Position GLSL-param
-     glVertexAttribPointer(glsl_locations.location_coordinates, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
-     glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	 //glEnableVertexAttribArray(glsl_locations.location_coordinates); // Bind vertex data to vertex_Position GLSL-param
+     //glVertexAttribPointer(glsl_locations.location_coordinates, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
+     //glBindBuffer(GL_ARRAY_BUFFER, 0); 
      
 	 // Init indice buffer
      glGenBuffers(1, &indiceIBOID);
      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiceIBOID);
      glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3*data.faceCount*sizeof(ushort), data.faceData, GL_STATIC_DRAW);
-     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
+	 glm::vec3 * vertices;
+	 vertices = new glm::vec3[data.vertexCount];
+	 glm::vec3 * normals;
+	 normals = new glm::vec3[data.vertexCount];
+
+	 for (int j = 0; j < data.vertexCount; j++) {
+		 glm::vec3 vertex;
+		 vertex.x = data.vertexData[j * 3];
+		 vertex.y = data.vertexData[j * 3 + 1];
+		 vertex.z = data.vertexData[j * 3 + 2];
+		 //vertices.push_back(vertex);
+		 vertices[j] = vertex;
+
+		 glm::vec3 normal;
+		 normal.x = data.vertexNormalData[j * 3];
+		 normal.y = data.vertexNormalData[j * 3 + 1];
+		 normal.z = data.vertexNormalData[j * 3 + 2];
+
+		 normals[j] = normal;
+	 }
+
+
 	 // Init normal buffer
      glGenBuffers(1,  &normalVBOID);
      glBindBuffer(GL_ARRAY_BUFFER, normalVBOID);
      glBufferData(GL_ARRAY_BUFFER, 3*data.vertexCount*sizeof(float), data.vertexNormalData, GL_STATIC_DRAW);
-
-	 glEnableVertexAttribArray(glsl_locations.location_normals); // Bind location data to vertex_Location shader-param
-     glVertexAttribPointer(glsl_locations.location_normals, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
-     glBindBuffer(GL_ARRAY_BUFFER, 0);
+	 //glBufferData(GL_ARRAY_BUFFER, data.vertexCount * sizeof(glm::vec3), normals, GL_STATIC_DRAW);
+	 //glEnableVertexAttribArray(glsl_locations.location_normals); // Bind location data to vertex_Location shader-param
+     //glVertexAttribPointer(glsl_locations.location_normals, 3, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
+     //glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	 // Init texture coordinate buffer
 	 glGenBuffers(1,  &texcordVBOID);
 	 glBindBuffer(GL_ARRAY_BUFFER, texcordVBOID);
      glBufferData(GL_ARRAY_BUFFER, 2*data.vertexCount*sizeof(float), data.textureCoordinates, GL_STATIC_DRAW);
-	 glEnableVertexAttribArray(glsl_locations.location_texture_coordinates); // Bind location data to texture_coordinates shader-param
-     glVertexAttribPointer(glsl_locations.location_texture_coordinates, 2, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
-     glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	 //glEnableVertexAttribArray(glsl_locations.location_texture_coordinates); // Bind location data to texture_coordinates shader-param
+     //glVertexAttribPointer(glsl_locations.location_texture_coordinates, 2, GL_FLOAT, GL_FALSE, 0, 0); // Set-up pointer
+     //glBindBuffer(GL_ARRAY_BUFFER, 0); 
      
 	 glBindVertexArray(0); // Unbind vertex array
 

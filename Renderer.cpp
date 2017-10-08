@@ -8,16 +8,16 @@ Renderer Renderer::instance = Renderer();
 
 void Renderer::init(HDC deviceCxtHandle)
 {
-	ambient_light_intensity[0] = 0.6; // Ambient light color/intensity
-	ambient_light_intensity[1] = 0.6;
-	ambient_light_intensity[2] = 0.6;
+	ambient_light_intensity[0] = 0.1; // Ambient light color/intensity
+	ambient_light_intensity[1] = 0.1;
+	ambient_light_intensity[2] = 0.1;
 	//Init other lights temporarily
-	diffuse_light_intensity[0] = 0.9; // Diffuse light color/intensity
-	diffuse_light_intensity[1] = 0.9;
-	diffuse_light_intensity[2] = 0.9;
-	specular_light_intensity[0] = 0.8; // Specular light color/intensity
-	specular_light_intensity[1] = 0.8;
-	specular_light_intensity[2] = 0.8;
+	diffuse_light_intensity[0] = 0.2; // Diffuse light color/intensity
+	diffuse_light_intensity[1] = 0.2;
+	diffuse_light_intensity[2] = 0.2;
+	specular_light_intensity[0] = 0.5; // Specular light color/intensity
+	specular_light_intensity[1] = 0.5;
+	specular_light_intensity[2] = 0.5;
 	//End of temporary
 
 	deviceContextHandle = deviceCxtHandle;
@@ -102,29 +102,23 @@ void Renderer::drawModels()
 			//glm::mat4 projectionMatrix = glm::make_mat4x4(mp);
 			//glUniformMatrix4fv(glsl_locations.location_projection_matrix, 1, GL_FALSE, mp);
 			glm::mat4 projectionMatrix = glm::perspective(45.0f, 1.0f, 0.5f, 200.f);
-			glUniformMatrix4fv(glsl_locations.location_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+			glUniformMatrix4fv(glsl_locations.location_projection_matrix, 1, GL_FALSE, &projectionMatrix[0][0]);
 
 			// Model View matrix
 			glm::mat4 modelViewMatrix = viewMatrix * modelMatrix;
-			//glGetFloatv(GL_MODELVIEW_MATRIX, mv);
-			glUniformMatrix4fv(glsl_locations.location_modelview_matrix, 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
+			glUniformMatrix4fv(glsl_locations.location_modelview_matrix, 1, GL_FALSE, &modelViewMatrix[0][0]);
 
 			// Model matrix
-			glUniformMatrix4fv(glsl_locations.location_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+			GLuint MatrixID = glGetUniformLocation(model.getShaderProgram(), "modelMatrix");
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
 
 			// View matrix
-			glUniformMatrix4fv(glsl_locations.location_view_matrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+			glUniformMatrix4fv(glsl_locations.location_view_matrix, 1, GL_FALSE, &viewMatrix[0][0]);
 
 			// Normal matrix
-			//GLfloat n[16];
-			//glGetFloatv(GL_MODELVIEW_MATRIX, n);
-			//glm::mat4 normalMatrix = glm::make_mat4x4(n);
-			//normalMatrix = glm::inverse(normalMatrix);
-			//normalMatrix = glm::transpose(normalMatrix);
 			glm::mat4 normalMatrix = glm::inverse(modelViewMatrix);
 			normalMatrix = glm::transpose(normalMatrix);
-
-			glUniformMatrix4fv(glsl_locations.location_normal_matrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+			glUniformMatrix4fv(glsl_locations.location_normal_matrix, 1, GL_FALSE, &normalMatrix[0][0]);
 
 			// Camera
 			glUniform3f(glsl_locations.location_viewing_point, camera_x, camera_y, camera_z);
@@ -141,30 +135,44 @@ void Renderer::drawModels()
 			glUniform3f(glsl_locations.location_ambient_light_reflection_constant, ambient_RC.x, ambient_RC.y, ambient_RC.z);			
 			glUniform3f(glsl_locations.location_diffuse_light_reflection_constant, diffuse_RC.x, diffuse_RC.y, diffuse_RC.z);			
 			glUniform3f(glsl_locations.location_specular_light_reflection_constant, specular_RC.x, specular_RC.y, specular_RC.z);
-			//#######################
         
-			glColor3f(1.0, 0.0, 0.0);
+			//glColor3f(1.0, 0.0, 0.0);
     
 			glBindVertexArray(model.getVaoID()); // Bind vertex array
 
+			glEnableVertexAttribArray(0);
 			glBindBuffer(GL_ARRAY_BUFFER, model.getVertexVboID()); // Bind vertex buffer
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // Set-up pointer
+
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.getIndiceIboID()); // Bind index buffer
     
+			glEnableVertexAttribArray(1); // Bind location data to texture_coordinates shader-param
 			glBindBuffer(GL_ARRAY_BUFFER, model.getTextureCoordinatesVBOID()); // Bind texture coords buffer
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0); // Set-up pointer
 			
+			glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, model.getNormalVboID()); // Bind normal buffer
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // Set-up pointer
 
 			glEnableClientState(GL_VERTEX_ARRAY);
 
-			glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), 0);
+			glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), (void*)0);
     
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, model.getTextureID()); // Bind texture to sampler 0
 
 			glDrawElements(GL_TRIANGLES, 3 * model.getFaceCount(), GL_UNSIGNED_SHORT, 0);
+			//glDrawArrays(GL_TRIANGLES, 0, 3 * model.getVertexCount());
+			
+			// Done drawing, unbind
 
 			glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture
 
 			glDisableClientState(GL_VERTEX_ARRAY);
+
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glDisableVertexAttribArray(2);
     
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // Unbind index buffer
 			glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind vertex buffer
@@ -174,8 +182,13 @@ void Renderer::drawModels()
 			glUseProgram(0); // Disable shader program
 
 			//Draw vertex normals as lines
-			/*
+			
 			glColor3f(0.0, 1.0, 0.0);
+			gluLookAt(camera_x, camera_y, camera_z, Player::get().getX(), Player::get().getY(), Player::get().getZ(), 0.0, 1.0, 0.0);
+			glPushMatrix();
+			glTranslatef(position.x, position.y, position.z);
+			glScalef(scale, scale, scale);
+			model_data data = model.getModelData();
 			for (int c = 0; c < data.vertexCount; c++)
 			{
 				glBegin(GL_LINES);
@@ -185,9 +198,9 @@ void Renderer::drawModels()
                            data.vertexData[c*3+2]+0.01*data.vertexNormalData[c*3+2] );
 				glEnd();
 			}
-			 */
+			glPopMatrix();
+			//glPopMatrix();
 			
-	    //glPopMatrix();
 	}
 	//End of modelDrawing
 	//#################################

@@ -1,4 +1,4 @@
-#version 150
+#version 330 core
 
 uniform sampler2D texture_sampler_0;
 
@@ -16,20 +16,19 @@ out vec4 fragment_Color;
 
 void main()
 {
-	float LdotN = max(0, dot(L, N));
-	vec3 diffuse = LdotN * vec3(1.0,1.0,1.0);
-	vec3 specular = vec3(0.0, 0.0, 0.0);
+	float LdotN = clamp(dot(L, N), 0, 1);
+	vec3 diffuse = LdotN * fragment_diffuse_intensity;
+	float specular;
 
 	if(LdotN > 0.0)
 	{
 		vec3 R = -normalize(reflect(L, N));
-		specular = pow(max(0, dot(R, V)), 3.0) * fragment_specular_intensity;
+		specular = pow(max(0, dot(R, V)), 2.0);
 	}
-	//vec4 ambi = vec4(fragment_ambient_intensity * text, 0.0);
-	//vec4 spec = vec4(fragment_specular_intensity * dotProductRV_alfa * text, 0.0);
 
 	vec3 text = texture2D(texture_sampler_0, texture_coordinates).xyz;
 
-	fragment_Color = vec4(diffuse, 1.0); // Only diff now
-	//fragment_Color = vec4(text, 1.0); // Only diff now
+	float light = clamp(fragment_diffuse_intensity[0] * LdotN, 0, 1);
+
+	fragment_Color = vec4(light*text, 1.0); // Only diff now
 }
