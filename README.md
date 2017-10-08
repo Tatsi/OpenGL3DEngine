@@ -11,6 +11,8 @@ for shaders and they are read from my shader files from `Shaders` directory.
 The engine uses a custom model format which is a slightly modified version of common `ply` format. The models can be done 
 and textured in Autodesk 3DS Max and then exported to the used format with a customized script.
 
+## Technologies
+
 Technologies and libraries used in this project:
 
 * C++
@@ -25,6 +27,12 @@ Technologies and libraries used in this project:
 ## TODO tasks
 
 * Fix all warnings
+* Update normal render to match new modern pipeline
+* Add light position to renderer and pass it to vertex shader in eye coordinates
+* Don't draw back side of triangles
+* Fix normal loading from file
 * Move to `GLM` instead of simple `vec3` struct in all math calculations
 * Finish Phong Shading
+* Add player character
 * Load some other models
+* Re-do UI (text log) with modern pipeline
