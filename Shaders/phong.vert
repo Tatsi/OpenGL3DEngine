@@ -2,7 +2,7 @@
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
-uniform mat4 normalMatrix;
+uniform mat3 normalMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 
@@ -41,19 +41,21 @@ void main()
 	fragment_diffuse_intensity = id * kd; // Diffuse intensity
 	fragment_specular_intensity = is * ks; // Specular intensity
 
-	// Calculate parameters for diffuse light
 	mat4 M = transpose(inverse(modelMatrix));
-    //vec3 world_position = (M * vec4(vertex_position,1)).xyz;
-	//vec3 world_normal = normalize((M * vec4(vertex_normal,0)).xyz);
-	vec3 world_position = (modelViewMatrix * vec4(vertex_position,1)).xyz;
-	vec3 world_normal = normalize((modelViewMatrix * vec4(vertex_normal,0)).xyz);
+ 
+	vec3 cameraSpace_vertex_position = (modelViewMatrix * vec4(vertex_position,1)).xyz;
 
-	vec3 light_position = vec3(10.0, 10.0, 10.0);
-	vec3 light_position_world = vec4(modelViewMatrix * vec4(light_position,1)).xyz;
-	L = -normalize(light_position_world - world_position);
-	//V = normalize(viewing_point - world_position);
-	V = (modelViewMatrix * vec4(vertex_position,1)).xyz;
-	N = world_normal;
+	// To transform the vertex normal to camera space we cant use modelViewMatrix as the model matrix
+	// might contain scaling and thus our normal would not be perpendicular to the vertex anymore.
+	// If it wouldn't contain scaling we could use modelViewMatrix if we notice that the length
+	// might change and would therefore normalize the vector afterwards.
+	vec3 cameraSpace_normal = normalize(normalMatrix * vertex_normal);
+
+	vec3 worldSpace_light_position = vec3(10.0, 10.0, 10.0);
+	vec3 cameraSpace_light_position = vec4(viewMatrix * vec4(light_position,1)).xyz;
+	L = normalize(cameraSpace_light_position - cameraSpace_vertex_position);
+	V = -normalize(cameraSpace_vertex_position.xyz); // vector from cameraSpace_position to camera
+	N = cameraSpace_normal;
 
 	texture_coordinates = texture_coordinate;
 

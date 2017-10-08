@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/inverse_transpose.hpp"
 
 Renderer Renderer::instance = Renderer();
 
@@ -115,10 +116,9 @@ void Renderer::drawModels()
 			// View matrix
 			glUniformMatrix4fv(glsl_locations.location_view_matrix, 1, GL_FALSE, &viewMatrix[0][0]);
 
-			// Normal matrix
-			glm::mat4 normalMatrix = glm::inverse(modelViewMatrix);
-			normalMatrix = glm::transpose(normalMatrix);
-			glUniformMatrix4fv(glsl_locations.location_normal_matrix, 1, GL_FALSE, &normalMatrix[0][0]);
+			// Normal matrix, 3x3
+			glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(modelViewMatrix));
+			glUniformMatrix3fv(glsl_locations.location_normal_matrix, 1, GL_FALSE, &normalMatrix[0][0]);
 
 			// Camera
 			glUniform3f(glsl_locations.location_viewing_point, camera_x, camera_y, camera_z);
