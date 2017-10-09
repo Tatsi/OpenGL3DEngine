@@ -52,10 +52,13 @@ void main()
 	vec3 cameraSpace_normal = normalize(normalMatrix * vertex_normal);
 
 	vec3 worldSpace_light_position = vec3(10.0, 10.0, 10.0);
-	vec3 cameraSpace_light_position = vec4(viewMatrix * vec4(light_position,1)).xyz;
+	vec3 cameraSpace_light_position = vec4(viewMatrix * vec4(worldSpace_light_position,1)).xyz;
 	L = normalize(cameraSpace_light_position - cameraSpace_vertex_position);
 	V = -normalize(cameraSpace_vertex_position.xyz); // vector from cameraSpace_position to camera
-	N = cameraSpace_normal;
+	
+	// TODO
+	// This indicates that there is bug. We should not have to negate the normal. Debug by drawing vertice normals and see if theyre correct
+	N = -cameraSpace_normal;
 
 	texture_coordinates = texture_coordinate;
 

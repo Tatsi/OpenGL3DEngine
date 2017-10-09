@@ -16,7 +16,7 @@ out vec4 fragment_Color;
 
 void main()
 {
-	float LdotN = clamp(dot(L, N), 0, 1);
+	float LdotN = clamp(dot(normalize(L), normalize(N)), 0, 1);
 	vec3 diffuse = LdotN * fragment_diffuse_intensity;
 	float specular;
 
@@ -30,5 +30,5 @@ void main()
 
 	float light = clamp(fragment_diffuse_intensity[0] * LdotN, 0, 1);
 
-	fragment_Color = vec4(light*text, 1.0); // Only diff now
+	fragment_Color = vec4(LdotN*text, 1.0); // Only diff now
 }

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/inverse_transpose.hpp"
 
 Renderer Renderer::instance = Renderer();
 
@@ -110,8 +110,7 @@ void Renderer::drawModels()
 			glUniformMatrix4fv(glsl_locations.location_modelview_matrix, 1, GL_FALSE, &modelViewMatrix[0][0]);
 
 			// Model matrix
-			GLuint MatrixID = glGetUniformLocation(model.getShaderProgram(), "modelMatrix");
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
+			glUniformMatrix4fv(glsl_locations.location_model_matrix, 1, GL_FALSE, &modelMatrix[0][0]);
 
 			// View matrix
 			glUniformMatrix4fv(glsl_locations.location_view_matrix, 1, GL_FALSE, &viewMatrix[0][0]);
@@ -182,7 +181,7 @@ void Renderer::drawModels()
 			glUseProgram(0); // Disable shader program
 
 			//Draw vertex normals as lines
-			
+			/*
 			glColor3f(0.0, 1.0, 0.0);
 			gluLookAt(camera_x, camera_y, camera_z, Player::get().getX(), Player::get().getY(), Player::get().getZ(), 0.0, 1.0, 0.0);
 			glPushMatrix();
@@ -199,7 +198,7 @@ void Renderer::drawModels()
 				glEnd();
 			}
 			glPopMatrix();
-			//glPopMatrix();
+			*/
 			
 	}
 	//End of modelDrawing
