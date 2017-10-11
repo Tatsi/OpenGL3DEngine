@@ -18,7 +18,7 @@ void main()
 {
 	float LdotN = max(dot(normalize(L), normalize(N)), 0.0);
 	float diffuse = LdotN * fragment_diffuse_intensity[0];
-	float specular;
+	float specular = 0.0;
 
 	if(LdotN > 0.0)
 	{
