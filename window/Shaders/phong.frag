@@ -27,9 +27,13 @@ void main()
 		specular = clamp(specular, 0.0, 1.0);
 	}
 
-	vec3 text = texture2D(texture_sampler_0, texture_coordinates).xyz;
+	vec3 tex = texture2D(texture_sampler_0, texture_coordinates).xyz;
 
-	float light = fragment_ambient_intensity[0] + diffuse + specular;
+	float attenuation_constant = 0.1;
+	float light_distance = length(L);
+	float attenuation = 1.0 / (1.0 + attenuation_constant * pow(light_distance, 2.0));
 
-	fragment_Color = vec4(light*text, 1.0);
+	float light = fragment_ambient_intensity[0] + attenuation * (diffuse + specular);
+
+	fragment_Color = vec4(light * tex, 1.0);
 }
