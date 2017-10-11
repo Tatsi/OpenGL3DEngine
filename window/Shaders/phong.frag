@@ -16,14 +16,14 @@ out vec4 fragment_Color;
 
 void main()
 {
-	float LdotN = clamp(dot(normalize(L), normalize(N)), 0, 1);
+	float LdotN = max(dot(normalize(L), normalize(N)), 0.0);
 	float diffuse = LdotN * fragment_diffuse_intensity[0];
 	float specular;
 
 	if(LdotN > 0.0)
 	{
-		vec3 R = -normalize(reflect(normalize(L), normalize(N)));
-		specular = fragment_specular_intensity[0] * pow(max(0, dot(R, normalize(V))), 30.1);
+		vec3 R = normalize(reflect(normalize(-L), normalize(N)));
+		specular = fragment_specular_intensity[0] * pow(max(0.0, dot(R, normalize(V))), 3);
 		specular = clamp(specular, 0.0, 1.0);
 	}
 
