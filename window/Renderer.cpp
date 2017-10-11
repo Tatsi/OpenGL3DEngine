@@ -9,16 +9,16 @@ Renderer Renderer::instance = Renderer();
 
 void Renderer::init(HDC deviceCxtHandle)
 {
-	ambient_light_intensity[0] = 0.1; // Ambient light color/intensity
-	ambient_light_intensity[1] = 0.1;
-	ambient_light_intensity[2] = 0.1;
+	ambient_light_intensity[0] = 0.4; // Ambient light color/intensity
+	ambient_light_intensity[1] = 0.4;
+	ambient_light_intensity[2] = 0.4;
 	//Init other lights temporarily
-	diffuse_light_intensity[0] = 0.2; // Diffuse light color/intensity
-	diffuse_light_intensity[1] = 0.2;
-	diffuse_light_intensity[2] = 0.2;
-	specular_light_intensity[0] = 0.5; // Specular light color/intensity
-	specular_light_intensity[1] = 0.5;
-	specular_light_intensity[2] = 0.5;
+	diffuse_light_intensity[0] = 0.3; // Diffuse light color/intensity
+	diffuse_light_intensity[1] = 0.3;
+	diffuse_light_intensity[2] = 0.3;
+	specular_light_intensity[0] = 0.2; // Specular light color/intensity
+	specular_light_intensity[1] = 0.2;
+	specular_light_intensity[2] = 0.2;
 	//End of temporary
 
 	deviceContextHandle = deviceCxtHandle;
@@ -103,9 +103,9 @@ void Renderer::drawModels()
 				//glColor3f(0.0, 1.0, 0.23);
 				glBegin(GL_LINES);
 				glVertex3f(v[c * 3], v[c * 3 + 1], v[c * 3 + 2]);
-				glVertex3f(v[c * 3] - 0.8 * n[c * 3],
-					v[c * 3 + 1] - 0.8 * n[c * 3 + 1],
-					v[c * 3 + 2] - 0.8 * n[c * 3 + 2]);
+				glVertex3f(v[c * 3] + 0.8 * n[c * 3],
+					v[c * 3 + 1] + 0.8 * n[c * 3 + 1],
+					v[c * 3 + 2] + 0.8 * n[c * 3 + 2]);
 				glEnd();
 			}
 			//glPopMatrix();

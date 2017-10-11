@@ -17,18 +17,19 @@ out vec4 fragment_Color;
 void main()
 {
 	float LdotN = clamp(dot(normalize(L), normalize(N)), 0, 1);
-	vec3 diffuse = LdotN * fragment_diffuse_intensity;
+	float diffuse = LdotN * fragment_diffuse_intensity[0];
 	float specular;
 
 	if(LdotN > 0.0)
 	{
-		vec3 R = -normalize(reflect(L, N));
-		specular = pow(max(0, dot(R, V)), 2.0);
+		vec3 R = -normalize(reflect(normalize(L), normalize(N)));
+		specular = fragment_specular_intensity[0] * pow(max(0, dot(R, normalize(V))), 30.1);
+		specular = clamp(specular, 0.0, 1.0);
 	}
 
 	vec3 text = texture2D(texture_sampler_0, texture_coordinates).xyz;
 
-	float light = clamp(fragment_diffuse_intensity[0] * LdotN, 0, 1);
+	float light = fragment_ambient_intensity[0] + diffuse + specular;
 
-	fragment_Color = vec4(LdotN*text, 1.0); // Only diff now
+	fragment_Color = vec4(light*text, 1.0);
 }

@@ -111,13 +111,13 @@ model_data loadAndCreateTexturedModelData(std::string filename)
                         float A_y = data.vertexData[3*data.faceData[f*3]+1];
                         float A_z = data.vertexData[3*data.faceData[f*3]+2];
                         
-                        float B_x = data.vertexData[3*data.faceData[f*3+1]];
-                        float B_y = data.vertexData[3*data.faceData[f*3+1]+1];
-                        float B_z = data.vertexData[3*data.faceData[f*3+1]+2];
-                        
-                        float C_x = data.vertexData[3*data.faceData[f*3+2]];
-                        float C_y = data.vertexData[3*data.faceData[f*3+2]+1];
-                        float C_z = data.vertexData[3*data.faceData[f*3+2]+2];
+                        float B_x = data.vertexData[3*data.faceData[f*3+2]];
+                        float B_y = data.vertexData[3*data.faceData[f*3+2]+1];
+                        float B_z = data.vertexData[3*data.faceData[f*3+2]+2];
+
+						float C_x = data.vertexData[3 * data.faceData[f * 3 + 1]];
+						float C_y = data.vertexData[3 * data.faceData[f * 3 + 1] + 1];
+						float C_z = data.vertexData[3 * data.faceData[f * 3 + 1] + 2];
                         //AB x AC
                         float AB_x = B_x - A_x; //Vector from A to B
                         float AB_y = B_y - A_y;
