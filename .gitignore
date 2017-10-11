@@ -5,5 +5,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-Models/*
+window/Models/*
 Debug/*
+window/Debug/*
+.vs/
+ipch/
