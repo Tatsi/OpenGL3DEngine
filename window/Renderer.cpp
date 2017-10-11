@@ -29,7 +29,10 @@ void Renderer::init(HDC deviceCxtHandle)
 
 	glClearColor(0.0, 0.0, 0.1, 0.0);
     
-    glEnable(GL_DEPTH_TEST); // Z-Buffer
+	glEnable(GL_DEPTH_TEST); // Z-Buffer
+	
+	glFrontFace(GL_CCW); // Our models triangles vertices are in CCW order so GL_CCW side is front
+	glCullFace(GL_BACK); // Enable culling of backfacing triangles
     
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
