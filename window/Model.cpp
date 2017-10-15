@@ -38,15 +38,15 @@ model_data Model::load()
 		texture_size.first = 4096;
 		texture_size.second = 4096;
 		//Set up material properties
-		ambient_light_reflection_constant[0] = 0.3;
-		ambient_light_reflection_constant[1] = 0.3;
-		ambient_light_reflection_constant[2] = 0.3;
-		diffuse_light_reflection_constant[0] = 0.9;
-		diffuse_light_reflection_constant[1] = 0.9;
-		diffuse_light_reflection_constant[2] = 0.9;
-		specular_light_reflection_constant[0] = 0.5;
-		specular_light_reflection_constant[1] = 0.5;
-		specular_light_reflection_constant[2] = 0.5;
+		ambient_light_reflection_constant[0] = 0.4;
+		ambient_light_reflection_constant[1] = 0.4;
+		ambient_light_reflection_constant[2] = 0.4;
+		diffuse_light_reflection_constant[0] = 1.0;
+		diffuse_light_reflection_constant[1] = 1.0;
+		diffuse_light_reflection_constant[2] = 1.0;
+		specular_light_reflection_constant[0] = 0.3;
+		specular_light_reflection_constant[1] = 0.3;
+		specular_light_reflection_constant[2] = 0.3;
 	}
 	else if (name == "box")
 	{
@@ -83,30 +83,30 @@ model_data Model::load()
 		texture_size.first = 256;
 		texture_size.second = 256;
 		// Set up material properties
-		ambient_light_reflection_constant[0] = 0.4;
-		ambient_light_reflection_constant[1] = 0.4;
-		ambient_light_reflection_constant[2] = 0.4;
-		diffuse_light_reflection_constant[0] = 0.7;
-		diffuse_light_reflection_constant[1] = 0.7;
-		diffuse_light_reflection_constant[2] = 0.7;
-		specular_light_reflection_constant[0] = 1.9;
-		specular_light_reflection_constant[1] = 1.9;
-		specular_light_reflection_constant[2] = 1.9;
+		ambient_light_reflection_constant[0] = 0.5;
+		ambient_light_reflection_constant[1] = 0.5;
+		ambient_light_reflection_constant[2] = 0.5;
+		diffuse_light_reflection_constant[0] = 0.6;
+		diffuse_light_reflection_constant[1] = 0.6;
+		diffuse_light_reflection_constant[2] = 0.6;
+		specular_light_reflection_constant[0] = 2.9;
+		specular_light_reflection_constant[1] = 2.9;
+		specular_light_reflection_constant[2] = 2.9;
 	}
 	else if (name == "player")
 	{
 		texture_size.first = 1024;
 		texture_size.second = 1024;
 		// Set up material properties
-		ambient_light_reflection_constant[0] = 0.4;
-		ambient_light_reflection_constant[1] = 0.4;
-		ambient_light_reflection_constant[2] = 0.4;
+		ambient_light_reflection_constant[0] = 1.2;
+		ambient_light_reflection_constant[1] = 1.2;
+		ambient_light_reflection_constant[2] = 1.2;
 		diffuse_light_reflection_constant[0] = 0.8;
 		diffuse_light_reflection_constant[1] = 0.8;
 		diffuse_light_reflection_constant[2] = 0.8;
-		specular_light_reflection_constant[0] = 1.9;
-		specular_light_reflection_constant[1] = 1.9;
-		specular_light_reflection_constant[2] = 1.9;
+		specular_light_reflection_constant[0] = 0.7;
+		specular_light_reflection_constant[1] = 0.7;
+		specular_light_reflection_constant[2] = 0.7;
 	}
 
 	 // Init shader program

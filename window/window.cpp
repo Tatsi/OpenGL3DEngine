@@ -122,7 +122,7 @@ int WINAPI WinMain( HINSTANCE hInstance,
 	//## Init and renderer, Engine and UI.##
 	//#####################################
 	Renderer::get().init(hdc);
-	Engine::get().init(&hwnd, ::GetDeviceCaps(hdc, HORZRES), ::GetDeviceCaps(hdc, VERTRES));
+	Engine::get().init(&hwnd, ::GetDeviceCaps(hdc, HORZRES), ::GetDeviceCaps(hdc, VERTRES), &Renderer::get());
 	UI::get().init(hdc);
 
 	//###############################

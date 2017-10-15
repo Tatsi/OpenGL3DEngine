@@ -10,6 +10,7 @@ void Player::init()
   falling_speed = 0.09;
   angle = 0.0;
   height = 0.3;
+  model_rotation = -30.0f;
   BB_width = 0.1;
   BB_height = 0.2; // Not used currently
   jump_height = 0.5;
@@ -30,6 +31,16 @@ void Player::init()
   pos.x = x;
   pos.y = y;
   pos.z = z;
+
+  vec3 model_pos;
+  model_pos.x = x;
+  model_pos.y = y - 0.3f;
+  model_pos.z = z;
+  game_object = new GameObject("player", ModelManager::get().getModel("player"), model_pos, 0.005, Player::get().getRotation(), true, 0.0);
+}
+void Player::unload()
+{
+	delete game_object;
 }
 void Player::draw()
 {
@@ -161,6 +172,25 @@ void Player::increaseAngle()
 void Player::decreaseAngle()
 {
 	angle -= rotationSpeed;
+}
+vec3 Player::getRotation()
+{
+	vec3 rotation;
+	rotation.x = 0.0f;
+	rotation.y = -(model_rotation + angle);
+	rotation.z = 0.0f;
+	return rotation;
+}
+
+GameObject Player::getGameObject()
+{
+	vec3 model_pos;
+	model_pos.x = x;
+	model_pos.y = y - 0.3f;;
+	model_pos.z = z;
+	return GameObject("player", ModelManager::get().getModel("player"), model_pos, 0.005, Player::get().getRotation(), true, 0.0);
+
+	//return *game_object;
 }
 void Player::updateFalling()
 {

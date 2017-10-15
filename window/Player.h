@@ -7,6 +7,7 @@ public:
 	static Player& get() { return instance; }
 	
 	void init();
+	void unload();
 
 	void move();
 
@@ -14,6 +15,8 @@ public:
 	float getY();
 	float getZ();
 	vec3 getPosition();
+	vec3 getRotation();
+	GameObject getGameObject();
 	float getAngle();
 	float getVX();
 	float getVZ();
@@ -75,11 +78,13 @@ private:
 	float vz; //Moving vector z
 	float speed;//Moving speed
 	float rotationSpeed;
+	float model_rotation;
 	float falling_speed;//Gravity
 	float jump_height; //The height player can jump to
 	float BB_width;//Width of the bounding box
 	float BB_height;//Height of the bounding box
 	float distanceToTriangleBelow;//Distance from the toes of the player to the triangle that player stands on
+	GameObject* game_object;
 
 	bool moving_up;
 	bool moving_down;

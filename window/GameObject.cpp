@@ -18,7 +18,14 @@ GLfloat GameObject::getScale() const
 {
 	return scale;
 }
-
+void GameObject::setRotation(vec3 angles)
+{
+	rotation = angles;
+}
+vec3 GameObject::getRotation() const
+{
+	return rotation;
+}
 boolean GameObject::calculateCollisionsOnTriangleLevel() const
 {
 	return collisionsOnTriangleLevel;

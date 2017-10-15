@@ -9,9 +9,9 @@ Renderer Renderer::instance = Renderer();
 
 void Renderer::init(HDC deviceCxtHandle)
 {
-	ambient_light_intensity[0] = 0.1; // Ambient light color/intensity
-	ambient_light_intensity[1] = 0.1;
-	ambient_light_intensity[2] = 0.1;
+	ambient_light_intensity[0] = 0.2; // Ambient light color/intensity
+	ambient_light_intensity[1] = 0.2;
+	ambient_light_intensity[2] = 0.2;
 	//Init other lights temporarily
 	diffuse_light_intensity[0] = 0.5; // Diffuse light color/intensity
 	diffuse_light_intensity[1] = 0.5;
@@ -38,6 +38,23 @@ void Renderer::init(HDC deviceCxtHandle)
 	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
+void Renderer::reshape(GLsizei w, GLsizei h)
+{
+	glMatrixMode(GL_PROJECTION);    /* prepare for and then */
+	glLoadIdentity();               /* define the projection */
+	
+	width = w;
+	heigth = h;
+	fovy = 45;
+	aspect = w / h;
+	nearZ = 0.5;
+	farZ = 50;
+
+	gluPerspective(fovy, aspect, nearZ, nearZ);
+	glMatrixMode(GL_MODELVIEW);  /* back to modelview matrix */
+	glViewport(0, 0, width, heigth);      /* define the viewport */
+}
+
 void Renderer::drawScene()
 {
 
@@ -49,9 +66,6 @@ void Renderer::drawScene()
    
 	//gluLookAt(camera_x, camera_y, camera_z, Player::get().getX(), Player::get().getY(), Player::get().getZ(), 0.0, 1.0, 0.0);
 	//glPushMatrix();
-	//drawTerrain();
-
-	//Player::get().draw();
 
     drawModels();
 	
@@ -62,16 +76,12 @@ void Renderer::drawScene()
     glFlush();    
 }
 
-
 void Renderer::drawModels()
 {
 	std::vector<GameObject>& gameObjects = LevelManager::get().getTerrain().getGameObjects();
 	
 	// Add other game objects to this list if they should be drawn
-	vec3 player_pos = Player::get().getPosition();
-	player_pos.y -= 0.3f;
-	GameObject player_game_object = GameObject("player", ModelManager::get().getModel("player"), player_pos, 0.005, true, 0.0);
-	gameObjects.push_back(player_game_object);
+	gameObjects.push_back(Player::get().getGameObject());
 
 	for (std::vector<GameObject>::const_iterator it = gameObjects.begin(); it < gameObjects.end(); it++)
 	{
@@ -82,16 +92,14 @@ void Renderer::drawModels()
 
 			GLfloat scale = it->getScale(); // Scaling and transforming must be done the same way to terrain squares which are used for col. detec.
 			vec3 position = it->getPosition();
+			vec3 rotation = it->getRotation();
 			model_data data = model.getModelData();
 			
 			// Temporary normal rendering
-			// As we need to negate normals to see them we know that normals are calculated to the wrong side of the triangle
-			// TODO fix normal calculation
-			// Seems that data passes through shaders. If we move glUseProgram below this it doesnt, but for some reason transformations dont match
+			/*
 			float* v = data.vertexData;
 			float* n = data.vertexNormalData;
-			
-			// Testing
+
 			glLoadIdentity();
 			glTranslatef(position.x, position.y, position.z);
 			glScalef(scale, scale, scale);
@@ -102,8 +110,7 @@ void Renderer::drawModels()
 			glGetFloatv(GL_PROJECTION_MATRIX, currentProjectionMatrix);
 			// If currentProjectionMatrix != projectionMatrix that is the problem
 			// TODO add condtition which launches breakpoint if so
-			// End testing
-
+			
 			for (int c = 0; c < data.vertexCount; c++)
 			{
 				//glColor3f(0.0, 1.0, 0.23);
@@ -116,10 +123,11 @@ void Renderer::drawModels()
 			}
 			//glPopMatrix();
 			// End of temp
-
+			*/
 			
 			// Calculate model matrix
 			glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, scale));
+			modelMatrix = glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) * modelMatrix; // Rotate around y axis
 			modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, position.z)) * modelMatrix;
 			
 			// Get view matrix
@@ -144,7 +152,7 @@ void Renderer::drawModels()
 			//glGetFloatv(GL_PROJECTION_MATRIX, mp);
 			//glm::mat4 projectionMatrix = glm::make_mat4x4(mp);
 			//glUniformMatrix4fv(glsl_locations.location_projection_matrix, 1, GL_FALSE, mp);
-			glm::mat4 projectionMatrix = glm::perspective(45.0f, 1.0f, 0.5f, 200.f);
+			glm::mat4 projectionMatrix = glm::perspective(fovy, aspect, nearZ, farZ);
 			glUniformMatrix4fv(glsl_locations.location_projection_matrix, 1, GL_FALSE, &projectionMatrix[0][0]);
 
 			// Model View matrix
@@ -203,7 +211,6 @@ void Renderer::drawModels()
 			glBindTexture(GL_TEXTURE_2D, model.getTextureID()); // Bind texture to sampler 0
 
 			glDrawElements(GL_TRIANGLES, 3 * model.getFaceCount(), GL_UNSIGNED_SHORT, 0);
-			//glDrawArrays(GL_TRIANGLES, 0, 3 * model.getVertexCount());
 			
 			// Done drawing, unbind
 
@@ -221,24 +228,9 @@ void Renderer::drawModels()
 			glBindVertexArray(0); // Unbind vertex array
 
 			glUseProgram(0); // Disable shader program
-
-			//Draw vertex normals as lines
-			
-			//glPushMatrix();
-			//glMatrixMode(GL_PROJECTION);    /* prepare for and then */
-			//glLoadIdentity();               /* define the projection */
-			//gluPerspective(45, 1, 0.5, 20);
-
-			//glMatrixMode(GL_MODELVIEW);
-			//glLoadIdentity();
-			
-			//glLoadMatrixf(&viewMatrix[0][0]);
-
-			//gluLookAt(camera_x, camera_y, camera_z, Player::get().getX(), Player::get().getY(), Player::get().getZ(), 0.0, 1.0, 0.0);
-			
-
 	}
 	gameObjects.pop_back();
+
 	//End of modelDrawing
 	//#################################
 }

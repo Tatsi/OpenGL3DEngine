@@ -11,7 +11,7 @@ class Engine
 public:
 	static Engine& get() { return instance; }
 	
-	void init(HWND* _hwnd, int screen_max_resolution_vertical, int screen_max_resolution_horizontal);
+	void init(HWND* _hwnd, int screen_max_resolution_vertical, int screen_max_resolution_horizontal, Renderer* r);
 	void start();
 	void quit();
 	void mainLoop();
@@ -27,6 +27,7 @@ private:
 	Engine& operator=(const Engine&);
 
 	HWND* hwnd;
+	Renderer* renderer;
 	int _screen_max_resolution_vertical;
 	int _screen_max_resolution_horizontal;
 	float nextGameUpdateTime;

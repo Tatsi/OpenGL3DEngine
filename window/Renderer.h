@@ -24,6 +24,7 @@ public:
 	
 	void rotateCameraRight();
 	void rotateCameraLeft();
+	void reshape(GLsizei w, GLsizei h);
 	
 private:
 	Renderer() { }
@@ -34,6 +35,14 @@ private:
 	float camera_x;
 	float camera_y;
 	float camera_z;
+
+	double fovy;
+	double aspect;
+	double nearZ;
+	double farZ;
+	GLsizei width;
+	GLsizei heigth;
+
 	//Directional light parameters
 	GLfloat ambient_light_intensity[3];//Ambient light color/intensity
 	//Other light parameters temporarily here

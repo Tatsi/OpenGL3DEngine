@@ -27,12 +27,9 @@ Technologies and libraries used in this project:
 ## TODO tasks
 
 * Fix all warnings
-* Update normal render to match new modern pipeline
-* Add light position to renderer and pass it to vertex shader in eye coordinates
-* Don't draw back side of triangles
-* Fix normal loading from file
 * Move to `GLM` instead of simple `vec3` struct in all math calculations
-* Finish Phong Shading
-* Add player character
+* Add light position to renderer and pass it to vertex shader in eye coordinates
+* Fix normal loading from file. Now normals are always recalculated. Bad for large models.
 * Load some other models
 * Re-do UI (text log) with modern pipeline
+* Implement basic animation

@@ -3,28 +3,29 @@
 
 Engine Engine::instance = Engine();
 
-void Engine::init(HWND* _hwnd, int screen_max_resolution_vertical, int screen_max_resolution_horizontal)
+void Engine::init(HWND* _hwnd, int screen_max_resolution_vertical, int screen_max_resolution_horizontal, Renderer* r)
 {
 	running = true;
-	//#############################
-	//##Reshape rendering context##
-	//#############################
 	hwnd = _hwnd;
 	full_screen = false;
 	_screen_max_resolution_vertical = screen_max_resolution_vertical;
 	_screen_max_resolution_horizontal = screen_max_resolution_horizontal;
-	reshape(800,600);
+	
 	previous_mouse_x = -5000;
 	previous_mouse_y = -5000;
 	lastRendered = 0.0;
 	lastUpdated = 0.0;
 	nextGameUpdateTime = 0.0;
 	updateCount = 0;
+	renderer = r;
+	//#############################
+	//##Reshape rendering context##
+	//#############################
+	r->reshape(800, 600);
 }
 
 void Engine::start()
 {
-	//Game State machine goes here
 	LevelManager::get().loadLevel();
 	UI::get().writeToGameLog("Entering main loop.");
 	mainLoop();
@@ -59,7 +60,7 @@ void Engine::mainLoop()
 			{
 				Player::get().move();
 				Player::get().updateFalling();
-				Renderer::get().setCameraY(Player::get().getY()+1.2); // Update camera position. Notice that camera is 1.2 higher than player center
+				Renderer::get().setCameraY(Player::get().getY()+1.4); // Update camera position. Notice that camera is 1.4 higher than player center
 			}
 			
 			nextGameUpdateTime += 1.0 / GAME_UPDATES_PER_SECOND;
@@ -105,7 +106,7 @@ void Engine::toggleFullscreen()
 {
 	if (full_screen) // Deactivate fullscreen
 	{
-		reshape(800,600);
+		renderer->reshape(800, 600);
 		SetWindowPos(
 			*hwnd,
 			HWND_TOP,
@@ -117,7 +118,7 @@ void Engine::toggleFullscreen()
 		full_screen = false;
 	}
 	else {
-		reshape(_screen_max_resolution_vertical, _screen_max_resolution_horizontal);
+		renderer->reshape(_screen_max_resolution_vertical, _screen_max_resolution_horizontal);
 		SetWindowPos(
 			*hwnd,
 			HWND_TOP,
