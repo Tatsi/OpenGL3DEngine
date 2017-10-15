@@ -23,13 +23,13 @@ void main()
 	if(LdotN > 0.0)
 	{
 		vec3 R = normalize(reflect(normalize(-L), normalize(N)));
-		specular = fragment_specular_intensity[0] * pow(max(0.0, dot(R, normalize(V))), 3);
+		specular = fragment_specular_intensity[0] * pow(max(0.0, dot(R, normalize(V))), 2);
 		specular = clamp(specular, 0.0, 1.0);
 	}
 
 	vec3 tex = texture2D(texture_sampler_0, texture_coordinates).xyz;
 
-	float attenuation_constant = 0.1;
+	float attenuation_constant = 0.001;
 	float light_distance = length(L);
 	float attenuation = 1.0 / (1.0 + attenuation_constant * pow(light_distance, 2.0));
 

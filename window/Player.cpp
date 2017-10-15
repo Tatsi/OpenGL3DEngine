@@ -5,13 +5,13 @@ Player Player::instance = Player();
 
 void Player::init()
 {
-  speed = 0.03; //Moving speed
-  rotationSpeed = 0.05;
+  speed = 0.03; // Moving speed
+  rotationSpeed = 0.07;
   falling_speed = 0.09;
   angle = 0.0;
   height = 0.3;
   BB_width = 0.1;
-  BB_height = 0.2;//Not used currently
+  BB_height = 0.2; // Not used currently
   jump_height = 0.5;
   vx = 0.0;
   vz = -2.0;
@@ -25,6 +25,11 @@ void Player::init()
   moving_down = false;
   moving_left = false;
   moving_right = false;
+
+  vec3 pos;
+  pos.x = x;
+  pos.y = y;
+  pos.z = z;
 }
 void Player::draw()
 {

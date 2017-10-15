@@ -59,7 +59,7 @@ void Engine::mainLoop()
 			{
 				Player::get().move();
 				Player::get().updateFalling();
-				Renderer::get().setCameraY(Player::get().getY()+0.8); // Update camera position. Notice that camera is 0.5 higher than player center
+				Renderer::get().setCameraY(Player::get().getY()+1.2); // Update camera position. Notice that camera is 1.2 higher than player center
 			}
 			
 			nextGameUpdateTime += 1.0 / GAME_UPDATES_PER_SECOND;

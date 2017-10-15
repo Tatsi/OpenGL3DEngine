@@ -9,16 +9,16 @@ Renderer Renderer::instance = Renderer();
 
 void Renderer::init(HDC deviceCxtHandle)
 {
-	ambient_light_intensity[0] = 0.4; // Ambient light color/intensity
-	ambient_light_intensity[1] = 0.4;
-	ambient_light_intensity[2] = 0.4;
+	ambient_light_intensity[0] = 0.1; // Ambient light color/intensity
+	ambient_light_intensity[1] = 0.1;
+	ambient_light_intensity[2] = 0.1;
 	//Init other lights temporarily
-	diffuse_light_intensity[0] = 0.3; // Diffuse light color/intensity
-	diffuse_light_intensity[1] = 0.3;
-	diffuse_light_intensity[2] = 0.3;
-	specular_light_intensity[0] = 0.2; // Specular light color/intensity
-	specular_light_intensity[1] = 0.2;
-	specular_light_intensity[2] = 0.2;
+	diffuse_light_intensity[0] = 0.5; // Diffuse light color/intensity
+	diffuse_light_intensity[1] = 0.5;
+	diffuse_light_intensity[2] = 0.5;
+	specular_light_intensity[0] = 0.5; // Specular light color/intensity
+	specular_light_intensity[1] = 0.5;
+	specular_light_intensity[2] = 0.5;
 	//End of temporary
 
 	deviceContextHandle = deviceCxtHandle;
@@ -66,9 +66,12 @@ void Renderer::drawScene()
 void Renderer::drawModels()
 {
 	std::vector<GameObject>& gameObjects = LevelManager::get().getTerrain().getGameObjects();
-	// Add other game objects to this list if they should be drawn
-
 	
+	// Add other game objects to this list if they should be drawn
+	vec3 player_pos = Player::get().getPosition();
+	player_pos.y -= 0.3f;
+	GameObject player_game_object = GameObject("player", ModelManager::get().getModel("player"), player_pos, 0.005, true, 0.0);
+	gameObjects.push_back(player_game_object);
 
 	for (std::vector<GameObject>::const_iterator it = gameObjects.begin(); it < gameObjects.end(); it++)
 	{
@@ -235,6 +238,7 @@ void Renderer::drawModels()
 			
 
 	}
+	gameObjects.pop_back();
 	//End of modelDrawing
 	//#################################
 }
